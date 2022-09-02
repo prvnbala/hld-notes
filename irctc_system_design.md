@@ -44,12 +44,41 @@ What is going to be our MVP (Minimum Viable Product)?
 - We could think, most booking happen (ex. 60%) during a peak time in a day like 10 AM to 11 AM. 
 - Therefore, peak traffic could be 6 million per hour - booking (write requests).
 - People could also search for 3 to 4 trains for availability before booking, so 24 million read requests per hours. 
+
 #### Storage:
 - Details to storage for each booking: passenger_name (128B), passenger_id(8B), date(8B), time(8B), train_id(8B), class (1B), seat_no (4B), pnr (8B), status (4B). 
 - Total memory per record = 200 Bytes.
 - Per day storage requirement = 10 million* 200 Byte = 2 GB.
 - Ticket booking will happen only for present and future. Past data can be moved to archival databases.
 - If we allow 90 day advance booking, we need to track data for 90 days only. 
+- Storage needed for 90 days = 90 * 2GB = 180 GB. If we add buffer of factor 2, still requirement is 360 GB. 
+- Therefore no sharding needed(less than 2TB), can work with SQL databases.
 
-> Traffic estimation: 6 million writes/hr and 24 million reads/hr.
+
+> Traffic estimation: 6 million writes/hr and 24 million reads/hr, high concurrency.
+
+> Storage estimation: SQL store, 360 GB, no sharding.
+
+> Workload type: Mixed workload, high read, high write.
+
+## 3. Design goals:
+- Search trains
+    - highly available
+    - Read : High
+- Train - check availability
+    - eventually consistent
+    - Read : Moderate
+- Train - book seat
+    - highly consistent
+    - Write : Moderate
+
+## 4. System design:
+### Search trains:
+- The number of trains and the train routes mostly remain constant. Changes are infrequent. 
+- If each train has 100 stops also, train-stop mapping table can at max have 500,000 entries. 
+- This can be easily stored in __SQL database__, or even a __cache__. 
+- So, given src, destination, date, etc. -> searching available trains can be done very quickly.
+
+### Check availability
+- 
 
