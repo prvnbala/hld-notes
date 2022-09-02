@@ -80,5 +80,11 @@ What is going to be our MVP (Minimum Viable Product)?
 - So, given src, destination, date, etc. -> searching available trains can be done very quickly.
 
 ### Check availability
-- 
+- Given train_id, date, source, destination, class; fetch the number of available seats.
+- We can have 'stop' column in the booking table. There will be multiple row for each seat for each stop.
+- Find the count of seats, that are having availablity on rows from source stop to destination stop. (use nested query)
+- We can have multiple machines and have different trains mapped to different machines to handle concurrency.
+- We can also use write-through cache. Cache can be used to check availability without touching db frequently. 
 
+## 5. Architecture
+![image](https://user-images.githubusercontent.com/88590426/188154353-6b36fe78-c369-4055-9520-3ae0a78747d9.png)
